@@ -43,7 +43,7 @@ export default function NavBar() {
               className="object-contain"
             />
           </div>
-          মোহাম্মদ আসগর আলী লবী
+          মোহাম্মদ আলী আসগর লবী
         </Link>
 
         {/* Desktop Navigation */}

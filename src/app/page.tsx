@@ -57,7 +57,7 @@ export default async function Home() {
       {/* Message Section */}
       <div className="text-center py-12 px-4 bg-white">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
-          মোহাম্মদ আসগর আলী লবী
+          মোহাম্মদ আলী আসগর লবী
         </h1>
         <p className="text-2xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
           শহীদ জিয়ার সৈনিক, জনগণের সেবক

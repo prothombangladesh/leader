@@ -1,134 +1,158 @@
-// src/app/peoples-voice/page.tsx
-import Button from '@/app/components/ui/Button';
-import Card from '@/app/components/ui/Card';
-import Input from '@/app/components/ui/Input';
-import Textarea from '@/app/components/ui/Textarea';
-import { prisma } from '@/app/lib/prisma';
-import Link from 'next/link';
-import { z } from 'zod';
+// src/app/(site)/peoples-voice/page.tsx
+
+
+"use client"; // use client component for form interactivity
+import { useState } from "react";
+import Card from "@/app/components/ui/Card";
+import Input from "@/app/components/ui/Input";
+import Textarea from "@/app/components/ui/Textarea";
+import { z } from "zod";
+import Button from "@/app/components/ui/Button";
 
 const schema = z.object({
   title: z.string().min(5),
-  content: z.string().min(20),
+  content: z.string().min(10),
   name: z.string().optional(),
   phone: z.string().optional(),
-  category: z
-    .enum([
-      'GENERAL',
-      'INFRASTRUCTURE',
-      'HEALTH',
-      'EDUCATION',
-      'JOBS',
-      'AGRICULTURE',
-      'SECURITY',
-      'OTHER',
-    ])
-    .default('GENERAL'),
+  category: z.enum([
+    "GENERAL",
+    "INFRASTRUCTURE",
+    "HEALTH",
+    "EDUCATION",
+    "JOBS",
+    "AGRICULTURE",
+    "SECURITY",
+    "OTHER",
+  ]),
 });
 
-export default async function PeoplesVoice() {
-  const posts = await prisma.post.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { createdAt: 'desc' },
-    include: { comments: { orderBy: { createdAt: 'asc' } } },
-    take: 20,
-  });
+// ✅ Define types
+interface Comment {
+  id: string;
+  content: string;
+  createdAt: string;
+}
 
-  type PostWithComments = typeof posts[number];
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  comments: Comment[];
+}
 
-  async function createPost(formData: FormData) {
-    'use server';
-    // convert FormData to Record<string, string>
-    const data: Record<string, string> = {};
-    formData.forEach((value, key) => {
-      if (typeof value === 'string') data[key] = value;
+export default function PeoplesVoicePage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // fetch posts from backend
+  async function fetchPosts() {
+    const res = await fetch("/api/posts");
+    const data: Post[] = await res.json();
+    setPosts(data);
+  }
+
+  // fetch posts on page load
+  if (posts.length === 0 && !loading) fetchPosts();
+
+  // form submit
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+    const data: Record<string, FormDataEntryValue> = {};
+    form.forEach((value, key) => {
+      data[key] = value;
     });
 
     const parsed = schema.safeParse(data);
-    if (!parsed.success) return;
-
-    const { name, phone, title, content, category } = parsed.data;
-
-    let userId: string | undefined = undefined;
-    if (name || phone) {
-      const user = await prisma.user.upsert({
-        where: { phone: phone ?? `anon-${Date.now()}` },
-        create: { name, phone },
-        update: { name },
-      });
-      userId = user.id;
+    if (!parsed.success) {
+      setError("সব ফিল্ড সঠিকভাবে পূরণ করুন।");
+      setLoading(false);
+      return;
     }
 
-    await prisma.post.create({
-      data: { title, content, category, authorId: userId },
+    const res = await fetch("/api/posts", {
+      method: "POST",
+      body: JSON.stringify(parsed.data),
+      headers: { "Content-Type": "application/json" },
     });
+
+    if (res.ok) {
+      e.currentTarget.reset();
+      await fetchPosts();
+    } else {
+      setError("পোস্টটি তৈরি করা যায়নি।");
+    }
+
+    setLoading(false);
   }
 
   return (
-    <div className="grid md:grid-cols-3 gap-6">
+    <div className="max-w-6xl mx-auto py-12 px-4 space-y-6">
+      <h1 className="text-3xl font-bold text-center">
+        আপনার সমস্যা বা পরামর্শ শেয়ার করুন
+      </h1>
+
       <Card>
-        <h2 className="text-xl font-semibold">Share your problem/advice</h2>
-        <form action={createPost} className="mt-4 space-y-3">
-          <Input
-            name="title"
-            placeholder="Short title (e.g., Road repair at Ward 4)"
-            required
-          />
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Input name="title" placeholder="সংক্ষিপ্ত শিরোনাম" required />
           <Textarea
             name="content"
-            placeholder="Explain the issue in detail..."
+            placeholder="আপনার সমস্যা/পরামর্শ লিখুন"
             required
           />
           <div className="grid grid-cols-2 gap-3">
-            <Input name="name" placeholder="Your name (optional)" />
-            <Input name="phone" placeholder="Phone (optional)" />
+            <Input name="name" placeholder="আপনার নাম (ঐচ্ছিক)" />
+            <Input name="phone" placeholder="ফোন নম্বর (ঐচ্ছিক)" />
           </div>
           <select
             name="category"
-            className="w-full border rounded-xl2 px-3 py-2"
+            className="w-full border rounded-xl px-3 py-2"
           >
             {[
-              'GENERAL',
-              'INFRASTRUCTURE',
-              'HEALTH',
-              'EDUCATION',
-              'JOBS',
-              'AGRICULTURE',
-              'SECURITY',
-              'OTHER',
+              "GENERAL",
+              "INFRASTRUCTURE",
+              "HEALTH",
+              "EDUCATION",
+              "JOBS",
+              "AGRICULTURE",
+              "SECURITY",
+              "OTHER",
             ].map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
             ))}
           </select>
-          <Button type="submit">Submit</Button>
+          {error && <p className="text-red-600">{error}</p>}
+          <Button className="text-gray-900" type="submit" disabled={loading}>
+            {loading ? "আপলোড হচ্ছে..." : "পোস্ট করুন"}
+          </Button>
         </form>
       </Card>
 
-      <div className="md:col-span-2 space-y-4">
-        {posts.map((p: PostWithComments) => (
+      <div className="space-y-4">
+        {posts.map((p) => (
           <Card key={p.id}>
-            <Link href={`/peoples-voice/${p.id}`} className="block">
-              <h3 className="text-lg font-semibold">{p.title}</h3>
-              <p className="text-gray-700 mt-1 line-clamp-3">{p.content}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                {new Date(p.createdAt).toLocaleString()}
-              </p>
-            </Link>
+            <h3 className="text-xl font-semibold">{p.title}</h3>
+            <p className="text-gray-700 mt-1 whitespace-pre-wrap">
+              {p.content}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              পোস্ট হয়েছে: {new Date(p.createdAt).toLocaleString("bn-BD")}
+            </p>
             {p.comments.length > 0 && (
-              <div className="mt-3 border-t pt-3">
-                <p className="text-sm font-medium">Candidate replies:</p>
-                {p.comments.map(
-                  (c: typeof p.comments[number]) => (
-                    <p
-                      key={c.id}
-                      className="text-sm text-gray-700 mt-1"
-                    >
-                      • {c.content}
-                    </p>
-                  )
-                )}
+              <div className="mt-3 border-t pt-2 space-y-1">
+                <p className="font-semibold">প্রশাসনের উত্তর:</p>
+                {p.comments.map((c) => (
+                  <p key={c.id} className="text-gray-800">
+                    • {c.content}
+                  </p>
+                ))}
               </div>
             )}
           </Card>

@@ -1,10 +1,49 @@
+import Image from "next/image";
 import Card from "@/app/components/ui/Card";
 
 export default function About() {
   return (
-    <Card>
-      <h1 className="text-2xl font-bold">About the Candidate</h1>
-      <p className="mt-3 text-gray-700">Born and raised in the constituency, committed to public service and clean politics.</p>
-    </Card>
+    <>
+      {/* Candidate Photo */}
+      <div className="flex justify-center mb-4">
+        <Image
+          src="https://i.ibb.co/tp4dGSYN/maal.png"
+          alt="Ali Asgar Lobi"
+          width={300}
+          height={300}
+          className="rounded-2xl shadow-lg"
+        />
+      </div>
+
+      {/* <h1 className="text-2xl font-bold text-center">About Ali Asgar Lobi</h1> */}
+      <div className="mt-3 text-gray-700 space-y-4">
+        <p>
+          মোহাম্মদ <strong>আলী আসগর লবী</strong> একজন বিশিষ্ট রাজনীতিবিদ, ব্যবসায়ী, ক্রীড়া সংগঠক এবং ক্রিকেট প্রশাসক। তিনি
+          বাংলাদেশ জাতীয়তাবাদী দলের কেন্দ্রীয় নির্বাহী কমিটির সদস্য ছিলেন এবং{" "}
+          <strong>২০০১ থেকে ২০০৬</strong> সাল পর্যন্ত খুলনা-২ আসনের সংসদ সদস্য হিসেবে দায়িত্ব পালন করেন।
+        </p>
+        <p>
+          রাজনীতির পাশাপাশি তিনি দেশের ক্রিকেট উন্নয়নেও গুরুত্বপূর্ণ ভূমিকা রাখেন।{" "}
+          <strong>২০০১ থেকে ২০০৬</strong> সাল পর্যন্ত বাংলাদেশ ক্রিকেট বোর্ডের সভাপতি এবং{" "}
+          <strong>২০০২ থেকে ২০০৪</strong> সাল পর্যন্ত এশিয়ান ক্রিকেট কাউন্সিলের সভাপতি হিসেবে দায়িত্ব
+          পালন করেন। তার আমলেই বাংলাদেশ ক্রিকেট দল ঐতিহাসিকভাবে{" "}
+          <strong>২০০৫ সালে কার্ডিফে অস্ট্রেলিয়াকে হারিয়ে বিশ্বকে বিস্মিত</strong> করেছিল।
+        </p>
+        <p>
+          এক-এগারোর তত্ত্বাবধায়ক সরকারের সময় তিনি নানা নির্যাতনের শিকার হন। তার একাধিক ব্যবসা
+          প্রতিষ্ঠান ধ্বংস করে দেওয়া হয় এবং ব্যাংক হিসাব দীর্ঘ সময়ের জন্য ফ্রিজ করে রাখা হয়। তবুও
+          তিনি দলের প্রতি অবিচল থেকে সর্বদা নেতাকর্মীদের পাশে ছিলেন।
+        </p>
+        <p>
+          তিনি <strong>Rupsha Group</strong>-এর চেয়ারম্যান এবং <strong>Saleha Hafez Foundation</strong>-এর
+          প্রতিষ্ঠাতা। ব্যক্তিগত অর্থায়নে তিনি খুলনা ও আশেপাশের এলাকায় বহু উন্নয়নমূলক কাজ করেছেন এবং
+          অসহায় মানুষের পাশে দাঁড়িয়েছেন।
+        </p>
+        <p>
+          আগামীতে তিনি খুলনা অঞ্চলের দীর্ঘদিনের সমস্যা বিশেষ করে{" "}
+          <strong>বিলডাকাতিয়া ও আশেপাশের বিলগুলোর জলাবদ্ধতা নিরসন</strong> করার অঙ্গীকার ব্যক্ত করেছেন।
+        </p>
+      </div>
+    </>
   );
 }
