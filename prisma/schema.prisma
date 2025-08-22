@@ -1,20 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PUBLIC
+  ADMIN
+}
+
+enum PostStatus {
+  PUBLISHED
+  HIDDEN
+}
+
+enum Category {
+  GENERAL
+  INFRASTRUCTURE
+  HEALTH
+  EDUCATION
+  JOBS
+  AGRICULTURE
+  SECURITY
+  OTHER
+}
+
 model User {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String?
-  email     String?  @unique
-  role      Role     @default(PUBLIC)
+  email     String?   @unique
+  phone     String?   @unique
+  password  String?   // hashed for ADMIN; public users can be null
+  role      Role      @default(PUBLIC)
   posts     Post[]
   comments  Comment[]
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 model Post {
-  id        String    @id @default(cuid())
+  id        String     @id @default(cuid())
+  title     String
   content   String
-  author    User?     @relation(fields: [authorId], references: [id])
+  category  Category   @default(GENERAL)
+  author    User?      @relation(fields: [authorId], references: [id])
   authorId  String?
+  status    PostStatus @default(PUBLISHED)
+  pinned    Boolean    @default(false)
   comments  Comment[]
-  createdAt DateTime  @default(now())
+  createdAt DateTime   @default(now())
 }
 
 model Comment {
@@ -27,7 +63,17 @@ model Comment {
   createdAt DateTime @default(now())
 }
 
-enum Role {
-  PUBLIC
-  ADMIN
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  body      String?
+  date      DateTime
+  location  String?
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
 }
