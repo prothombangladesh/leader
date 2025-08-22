@@ -19,7 +19,7 @@ export default async function Home() {
       {/* Hero Section */}
       <div className="relative w-full h-96 md:h-[500px] bg-gradient-to-r from-blue-200 to-purple-200">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-52 h-52 md:w-64 md:h-64">
+          <div className="relative w-200 h-200 md:w-200 md:h-200">
             <Image
               src="https://i.ibb.co/tp4dGSYN/maal.png"
               alt="Mohammad Asgor Ali Lobbi"
