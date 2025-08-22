@@ -1,4 +1,15 @@
-import { PropsWithChildren } from 'react';
-export default function Card({ children }: PropsWithChildren) {
-  return <div className="bg-white rounded-2xl shadow-soft p-5">{children}</div>;
+import { ReactNode } from "react";
+import clsx from "clsx"; // optional helper for conditional classes
+
+interface CardProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export default function Card({ children, className }: CardProps) {
+  return (
+    <div className={clsx("bg-white shadow rounded-lg", className)}>
+      {children}
+    </div>
+  );
 }
