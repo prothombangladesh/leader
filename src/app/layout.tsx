@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { Noto_Serif_Bengali } from 'next/font/google'
 import NavBar from './components/nav/NavBar';
 import Link from 'next/link';
+import Footer from './components/foot/Footer';
 
 const notoSerifBengali = Noto_Serif_Bengali({
   subsets: ['bengali'], // ensures Bengali characters load
@@ -35,12 +36,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`text-gray-900 ${notoSerifBengali.className}`}>
         <NavBar />
         <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-        <footer className="border-t py-8 text-sm text-gray-500">
+        {/* <footer className="border-t py-8 text-sm text-gray-500">
           <div className="mx-auto max-w-6xl px-4 flex justify-between">
             <span>© {new Date().getFullYear()} মোহাম্মদ আসগর আলী লবী</span>
             <Link className="hover:text-blue-600" href="/peoples-voice">সমস্যা জানান</Link>
           </div>
-        </footer>
+        </footer> */}
+
+        <Footer/>
       </body>
     </html>
   );
