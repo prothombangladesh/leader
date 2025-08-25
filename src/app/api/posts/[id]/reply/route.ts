@@ -1,14 +1,15 @@
 // src/app/api/posts/[id]/reply/route.ts
 
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 
 export async function POST(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const data = await req.json();
-  const postId = context.params.id;
+  const { id: postId } = await context.params; // 👈 await here
 
   // 👇 Only admin can reply, here just hardcode adminId
   const adminId = "ADMIN_EMAIL";
