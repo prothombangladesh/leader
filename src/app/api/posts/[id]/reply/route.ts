@@ -6,7 +6,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const postId = params.id;
 
   // 👇 Only admin can reply, here just hardcode adminId
-  const adminId = "YOUR_ADMIN_USER_ID";
+  const adminId = "ADMIN_EMAIL";
 
   const comment = await prisma.comment.create({
     data: {
